@@ -9,5 +9,8 @@
             "email": "efolam@gmail.com"
         }
     ],
+    "bin": [
+      "bin/brain-games"
+    ],
     "require": {}
 }
