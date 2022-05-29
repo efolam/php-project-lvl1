@@ -1,0 +1,13 @@
+{
+    "name": "hexlet/code",
+    "description": "Hexlet Project 1 - Brain Games",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Astemir Kokov",
+            "email": "efolam@gmail.com"
+        }
+    ],
+    "require": {}
+}
