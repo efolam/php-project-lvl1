@@ -22,7 +22,7 @@ function round(string $name = '', int $rounds = 0): void
     line("You answer: {$answer}");
     $correctAnswer = $number % 2 === 0 ? 'yes' : 'no';
 
-    if ($answer === $correctAnswer) {
+    if ($answer == $correctAnswer) {
         line('Correct!');
 
         if ($rounds > 1) {

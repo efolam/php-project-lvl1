@@ -23,11 +23,11 @@ function round(string $name = '', int $rounds = 0): void
 
     $expression = "{$number1} {$operation} {$number2}";
 
-    $answer = prompt("Question: $expression");
+    $answer = (int)prompt("Question: $expression");
     line("You answer: {$answer}");
     $correctAnswer = eval("return $expression;");
 
-    if ((int)$answer === $correctAnswer) {
+    if ($answer == $correctAnswer) {
         line('Correct!');
 
         if ($rounds > 1) {
