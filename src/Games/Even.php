@@ -15,6 +15,7 @@ function round(string $name = '', int $rounds = 0): void
 {
     $minRange = 1;
     $maxRange = 100;
+
     $number = rand($minRange, $maxRange);
 
     $answer = prompt("Question: {$number}");
