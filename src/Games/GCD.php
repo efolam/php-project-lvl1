@@ -2,42 +2,31 @@
 
 namespace BrainGames\Games\GCD;
 
+use function BrainGames\Engine\run;
 use function cli\line;
 use function cli\prompt;
 
-function play(string $name = '', int $rounds = 0): void
+const GAME_DESCRIPTION = 'Find the greatest common divisor of given numbers.';
+const MIN_RANGE = 1;
+const MAX_RANGE = 20;
+
+function play(): void
 {
-    line('Find the greatest common divisor of given numbers.');
-    round($name, $rounds);
-}
+    $round = function () {
+        $a = rand(MIN_RANGE, MAX_RANGE);
+        $b = rand(MIN_RANGE, MAX_RANGE);
 
-function round(string $name = '', int $rounds = 0): void
-{
-    $minRange = 1;
-    $maxRange = 20;
+        $answer = prompt("Question: {$a} {$b}");
+        line("You answer: {$answer}");
+        $correctAnswer = gcd($a, $b);
 
-    $num1 = rand($minRange, $maxRange);
-    $num2 = rand($minRange, $maxRange);
+        return [$answer, $correctAnswer];
+    };
 
-    $answer = prompt("Question: {$num1} {$num2}");
-    line("You answer: {$answer}");
-    $correctAnswer = gcd($num1, $num2);
-
-    if ($answer == $correctAnswer) {
-        line('Correct!');
-
-        if ($rounds > 1) {
-            round($name, $rounds - 1);
-        } else {
-            line("Congratulations, {$name}!");
-        }
-    } else {
-        line("'{$answer}' is wrong answer ;(. Correct answer was '{$correctAnswer}'.");
-        line("Let's try again, {$name}!");
-    }
+    run(GAME_DESCRIPTION, $round);
 }
 
 function gcd(int $num1, int $num2): int
 {
-    return ($num1 % $num2) ? gcd($num2, $num1 % $num2) : $num2;
+    return (bool)($num1 % $num2) ? gcd($num2, $num1 % $num2) : $num2;
 }

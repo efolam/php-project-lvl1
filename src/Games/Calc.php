@@ -2,41 +2,30 @@
 
 namespace BrainGames\Games\Calc;
 
+use function BrainGames\Engine\run;
 use function cli\line;
 use function cli\prompt;
 
-function play(string $name = '', int $rounds = 0): void
+const GAME_DESCRIPTION = 'What is the result of the expression?';
+const MIN_RANGE = 1;
+const MAX_RANGE = 2;
+const OPERATIONS = ['+', '-', '*'];
+
+function play(): void
 {
-    line('What is the result of the expression?');
-    round($name, $rounds);
-}
+    $round = function () {
+        $a = rand(MIN_RANGE, MAX_RANGE);
+        $b = rand(MIN_RANGE, MAX_RANGE);
+        $operationId = rand(0, count(OPERATIONS) - 1);
+        $operation = OPERATIONS[$operationId];
+        $expression = "{$a} {$operation} {$b}";
 
-function round(string $name = '', int $rounds = 0): void
-{
-    $minRange = 1;
-    $maxRange = 10;
-    $operations = ['+', '-', '*'];
+        $answer = (int)prompt("Question: $expression");
+        line("You answer: {$answer}");
+        $correctAnswer = eval("return $expression;");
 
-    $number1 = rand($minRange, $maxRange);
-    $number2 = rand($minRange, $maxRange);
-    $operation = $operations[rand(0, 2)];
+        return [$answer, $correctAnswer];
+    };
 
-    $expression = "{$number1} {$operation} {$number2}";
-
-    $answer = (int)prompt("Question: $expression");
-    line("You answer: {$answer}");
-    $correctAnswer = eval("return $expression;");
-
-    if ($answer == $correctAnswer) {
-        line('Correct!');
-
-        if ($rounds > 1) {
-            round($name, $rounds - 1);
-        } else {
-            line("Congratulations, {$name}!");
-        }
-    } else {
-        line("'{$answer}' is wrong answer ;(. Correct answer was '{$correctAnswer}'.");
-        line("Let's try again, {$name}!");
-    }
+    run(GAME_DESCRIPTION, $round);
 }

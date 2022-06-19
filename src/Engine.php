@@ -2,45 +2,29 @@
 
 namespace BrainGames\Engine;
 
-use function BrainGames\Games\Calc\play as playBrainCalc;
-use function BrainGames\Games\Even\play as playBrainEven;
-use function BrainGames\Games\GCD\play as playBrainGCD;
-use function BrainGames\Games\Prime\play as playBrainPrime;
-use function BrainGames\Games\Progression\play as playBrainProgression;
 use function cli\line;
 use function cli\prompt;
 
-function play($game): void
-{
-    $rounds = 3;
+const ROUNDS = 3;
 
+function run(string $gameDescription, callable $round): void
+{
     line("Welcome to the Brain Games!");
     $name = prompt("May I have your name?");
     line("Hello {$name}");
+    line($gameDescription);
 
-    switch ($game) {
-        case 'brain-even':
-            playBrainEven($name, $rounds);
-            break;
+    for ($i = 0; $i < ROUNDS; $i++) {
+        [$answer, $correctAnswer] = $round();
 
-        case 'brain-calc':
-            playBrainCalc($name, $rounds);
-            break;
-
-        case 'brain-gcd':
-            playBrainGCD($name, $rounds);
-            break;
-
-        case 'brain-progression':
-            playBrainProgression($name, $rounds);
-            break;
-
-        case 'brain-prime':
-            playBrainPrime($name, $rounds);
-            break;
-
-        default:
-            line("Game {$game} not found.");
-            break;
+        if ($answer == $correctAnswer) {
+            line('Correct!');
+        } else {
+            line("'{$answer}' is wrong answer ;(. Correct answer was '{$correctAnswer}'.");
+            line("Let's try again, {$name}!");
+            return;
+        }
     }
+
+    line("Congratulations, {$name}!");
 }

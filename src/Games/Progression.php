@@ -2,55 +2,38 @@
 
 namespace BrainGames\Games\Progression;
 
+use function BrainGames\Engine\run;
 use function cli\line;
 use function cli\prompt;
 
-function play(string $name = '', int $rounds = 0): void
+const GAME_DESCRIPTION = 'What number is missing in the progression?';
+const MIN_PROGRESSION_LENGTH = 5;
+const MAX_PROGRESSION_LENGTH = 10;
+const MIN_STEP_RANGE = 1;
+const MAX_STEP_RANGE = 5;
+const MIN_START_RANGE = -10;
+const MAX_START_RANGE = 10;
+
+function play(): void
 {
-    line('What number is missing in the progression?');
-    round($name, $rounds);
-}
+    $round = function () {
+        $length = rand(MIN_PROGRESSION_LENGTH, MAX_PROGRESSION_LENGTH);
+        $step = rand(MIN_STEP_RANGE, MAX_STEP_RANGE);
+        $start = rand(MIN_START_RANGE, MAX_START_RANGE);
+        $progression = makeProgression($length, $step, $start);
 
-function round(string $name = '', int $rounds = 0): void
-{
-    $minProgressionLength = 5;
-    $maxProgressionLength = 10;
+        $itemId = rand(0, $length - 1);
+        $hiddenItem = $progression[$itemId];
+        $progression[$itemId] = '..';
+        $progression = implode(' ', $progression);
 
-    $minStepRange = 1;
-    $maxStepRange = 5;
+        $answer = (int)prompt("Question: {$progression}");
+        line("You answer: {$answer}");
 
-    $minStartRange = -10;
-    $maxStartRange = 10;
+        return[$answer, $hiddenItem];
+    };
 
-    $progression = makeProgression(
-        rand($minProgressionLength, $maxProgressionLength),
-        rand($minStepRange, $maxStepRange),
-        rand($minStartRange, $maxStartRange)
-    );
-
-    $progressionLength = count($progression);
-    $itemId = rand(0, $progressionLength - 1);
-    $hiddenItem = $progression[$itemId];
-    $progression[$itemId] = '..';
-
-    $progression = implode(' ', $progression);
-
-    $answer = (int)prompt("Question: {$progression}");
-    line("You answer: {$answer}");
-    $correctAnswer = $hiddenItem;
-
-    if ($answer == $correctAnswer) {
-        line('Correct!');
-
-        if ($rounds > 1) {
-            round($name, $rounds - 1);
-        } else {
-            line("Congratulations, {$name}!");
-        }
-    } else {
-        line("'{$answer}' is wrong answer ;(. Correct answer was '{$correctAnswer}'.");
-        line("Let's try again, {$name}!");
-    }
+    run(GAME_DESCRIPTION, $round);
 }
 
 function makeProgression(int $length, int $step, int $start = 0): array

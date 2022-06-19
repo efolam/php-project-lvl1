@@ -2,59 +2,39 @@
 
 namespace BrainGames\Games\Prime;
 
+use function BrainGames\Engine\run;
 use function cli\line;
 use function cli\prompt;
 
-function play(string $name = '', int $rounds = 0): void
+const GAME_DESCRIPTION = 'Answer "yes" if given number is prime. Otherwise answer "no".';
+const MIN_RANGE = 1;
+const MAX_RANGE = 100;
+
+function play(): void
 {
-    line('Answer "yes" if given number is prime. Otherwise answer "no".');
-    round($name, $rounds);
-}
+    $round = function () {
+        $number = rand(MIN_RANGE, MAX_RANGE);
 
-function round(string $name = '', int $rounds = 0): void
-{
-    $minRange = 1;
-    $maxRange = 100;
+        $answer = prompt("Question: {$number}");
+        line("You answer: {$answer}");
+        $correctAnswer = isPrime($number) ? 'yes' : 'no';
 
-    $number = rand($minRange, $maxRange);
+        return [$answer, $correctAnswer];
+    };
 
-    $answer = prompt("Question: {$number}");
-    line("You answer: {$answer}");
-    $correctAnswer = isPrime($number) ? 'yes' : 'no';
-
-    if ($answer == $correctAnswer) {
-        line('Correct!');
-
-        if ($rounds > 1) {
-            round($name, $rounds - 1);
-        } else {
-            line("Congratulations, {$name}!");
-        }
-    } else {
-        line("'{$answer}' is wrong answer ;(. Correct answer was '{$correctAnswer}'.");
-        line("Let's try again, {$name}!");
-    }
+    run(GAME_DESCRIPTION, $round);
 }
 
 function isPrime(int $number): bool
 {
-    if ($number === 2) {
-        return true;
-    }
-
-    if ($number % 2 === 0) {
+    if ($number < 2) {
         return false;
     }
 
-    $i = 3;
-    $max_factor = (int)sqrt($number);
-
-    while ($i <= $max_factor) {
+    for ($i = 2; $i <= $number / 2; $i++) {
         if ($number % $i === 0) {
             return false;
         }
-
-        $i += 2;
     }
 
     return true;
